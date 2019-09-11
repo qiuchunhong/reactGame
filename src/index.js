@@ -70,6 +70,11 @@ class Game extends React.Component {
     })
   }
   jumpTo(step) {
+    let liList = document.getElementsByClassName('game-info')[0].getElementsByTagName("li");
+    for (var i = 0; i < liList.length; i++) {
+      liList[i].childNodes[0].style = ''
+    }
+    liList[step].childNodes[0].style = 'background:yellow'
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0
