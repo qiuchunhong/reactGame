@@ -68,11 +68,10 @@ class Game extends React.Component {
     })
   }
   jumpTo(step) {
-    let liList = document.getElementsByClassName('game-info')[0].getElementsByTagName("li");
-    for (var i = 0; i < liList.length; i++) {
-      liList[i].childNodes[0].style = ''
+    let squareList = document.getElementsByClassName('square')
+    for (let i = 0; i < squareList.length; i++) {
+      squareList[i].style = ''
     }
-    //   liList[step].childNodes[0].style = 'background:yellow'
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0
@@ -101,7 +100,10 @@ class Game extends React.Component {
     })
     let status;
     if (winner) {
-      status = 'Winner: ' + winner
+      status = 'Winner: ' + winner[0];
+      winner[1].forEach(v => {
+        document.getElementsByClassName('square')[v].style = "background:red";
+      })
     } else {
       if (this.state.stepNumber === 9) {
         status = 'The match was drawn'
@@ -112,15 +114,18 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-x-axis">
-          <div className="x-axis"></div>
-          <div className="x-axis">1</div>
-          <div className="x-axis">2</div>
-          <div className="x-axis">3</div>
+          {
+            Array(3).fill(null).map((v, k) => (
+              <div className="x-axis" key={k}>{k + 1}</div>
+            ))
+          }
         </div>
         <div className="game-board">
-          <div className="x-axis">a</div>
-          <div className="x-axis">b</div>
-          <div className="x-axis">c</div>
+          {
+            Array(3).fill(null).map((v, k) => (
+              <div className="x-axis" key={k}>{xAxis[k]}</div>
+            ))
+          }
           <Board squares={current.squares} onClick={(i) => { this.handleClick(i) }} />
         </div>
         <div className="game-info">
@@ -153,7 +158,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [squares[a], lines[i]];
     }
   }
   return null;
