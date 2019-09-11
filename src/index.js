@@ -46,7 +46,8 @@ class Game extends React.Component {
         squares: Array(9).fill(null)
       }],
       stepNumber: 0,
-      xIsNext: true
+      xIsNext: true,
+      sort: true,
     }
   }
   handleClick(i) {
@@ -71,10 +72,15 @@ class Game extends React.Component {
     for (var i = 0; i < liList.length; i++) {
       liList[i].childNodes[0].style = ''
     }
-    liList[step].childNodes[0].style = 'background:yellow'
+    //   liList[step].childNodes[0].style = 'background:yellow'
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0
+    })
+  }
+  order() {
+    this.setState({
+      sort: !this.state.sort
     })
   }
   render() {
@@ -83,12 +89,13 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
     const xAxis = ['a', 'b', 'c'];
     const moves = history.map((step, move) => {
+      const style = this.state.stepNumber === move ? { 'fontWeight': 'bold' } : {}
       const desc = move ?
         'Go to move #' + move + ' (' + (parseInt(step.lastIndex / 3) + 1) + ',' + xAxis[step.lastIndex % 3] + ')' :
         'Go to game start';
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button onClick={() => this.jumpTo(move)} style={style} >{desc}</button>
         </li>
       )
     })
@@ -118,7 +125,8 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol>{moves}</ol>
+          <div><button onClick={() => this.order()}>{this.state.sort ? '正序' : '倒序'}</button></div>
+          <ol>{this.state.sort ? moves : moves.reverse()}</ol>
         </div>
       </div>
     );
